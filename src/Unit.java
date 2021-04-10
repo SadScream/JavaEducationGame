@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 public class Unit {
 	private Area area;
+	private int coalition = -1;
 	private int x = 0, y = 0;
 	private ArrayList<Point> path = new ArrayList<Point>();
 	private ArrayList<Integer> trends = new ArrayList<Integer>();
@@ -39,6 +40,14 @@ public class Unit {
 		turnMap.put(6, 2); // налево
 		turnMap.put(7, 1); // налево полоборота
 	}
+	
+	public void setCoalition(int x) {
+		coalition = x;
+	}
+
+	public int getCoalition() {
+		return coalition;
+	};
 	
 	public int getX() {
 		// TODO Auto-generated method stub

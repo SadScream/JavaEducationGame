@@ -1,7 +1,8 @@
 
 public class Area {
-	public final int WALL = -2;
-	public final int UNIT = -1;
+	public static final int WALL = -2;
+	public static final int FREE = -1;
+	public static final int UNIT = -5;
 	private int col = 13, row = 10;
 	
 	private int[][] map = new int[row][col];
@@ -63,7 +64,17 @@ public class Area {
 			map[y][x] = status;
 	}
 
+
+	public void remove(int x, int y) {
+		if (x>=0 && y>=0 && x < map[0].length && y<map.length) {
+			if (map[y][x] == WALL) {
+				map[y][x] = FREE;
+			}
+		}
+	}
+	
 	public int get(int cx, int cy) {
 		return map[cy][cx];
 	}
+	
 }

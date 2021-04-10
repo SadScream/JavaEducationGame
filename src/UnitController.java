@@ -58,7 +58,7 @@ public class UnitController {
 		 */
 		
 		Graphics2D g = (Graphics2D)gl;
-		
+		System.out.println(anim);
 		for (int i = 0; i < units.length; i++) {
 			BufferedImage img = sheet.grabSprite(anim, units[i].getTrend());
 			
@@ -71,8 +71,13 @@ public class UnitController {
 					field.width-8, field.height-8, null);
 			
 			if (selected[i]) {
+				int coalition = units[i].getCoalition();
+				Color temp_color = new Color(
+						60*coalition, 
+						95*coalition, 
+						130*coalition);
 				g.setStroke(new BasicStroke(3f));
-				g.setColor(Color.red);
+				g.setColor(temp_color);
 				g.drawOval(
 						x, y,
 						field.width, field.height);
@@ -91,14 +96,15 @@ public class UnitController {
 		 * у каждого юнита вызывает метод tick
 		 */
 		
+		if (anim<3) {
+			anim++;
+		}
+		else {
+			anim=0;
+		}
+		
 		for (Unit u: units) {
 			u.tick();
-			if (anim<5) {
-				anim++;
-			}
-			else {
-				anim=0;
-			}
 		}
 	}
 }

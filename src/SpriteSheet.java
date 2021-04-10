@@ -56,7 +56,7 @@ public class SpriteSheet extends JFrame {
 				}
 			}
 			sprNumber = frames.size();
-			for (int i = 0; i < sprNumber / 6; i++) {
+			for (int i = 0; i < sprNumber / 5; i++) {
 				for (int n = 3; n > 0; n--) {
 					int index = i*(sprNumber/6)+n;
 					BufferedImage tempBi = new BufferedImage(frames.get(index).getWidth(), frames.get(index).getHeight(), 
@@ -66,14 +66,6 @@ public class SpriteSheet extends JFrame {
 					frames.add(tempBi);
 				}
 			}
-//			for (int n = 3; n>0; n--) {
-//				for (int i = sprNumber/6; i<sprNumber*n/5; i++) {
-//					BufferedImage tempBi = new BufferedImage(frames.get(i).getWidth(), frames.get(i).getHeight(), BufferedImage.TYPE_INT_ARGB);
-//					Graphics g = tempBi.getGraphics();
-//					g.drawImage(frames.get(i), 0+tempBi.getWidth(), 0, -tempBi.getWidth(), tempBi.getHeight(), null);
-//					frames.add(tempBi);
-//				}
-//			}
 			sprNumber = frames.size();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -87,27 +79,19 @@ public class SpriteSheet extends JFrame {
 		for (int i = 0; i < frames.size(); i++) {
 			g.drawImage(frames.get(i), i*25+10, 50, 25, 25, null);
 		}
-		
-//		g.drawImage(grabSprite(1,3), 100, 50, null);
 	}
 	
 	public BufferedImage grabSprite(int row, int col) {
-//		System.out.println(sprNumber);
-		int sprRow = sprNumber / 9;
-		int temp, index  = 0;
+		int index  = 0;
 		
 		if (col >= 5) {
-			temp = row;
-			row = col+1;
-			col = temp;
-			System.out.println("r:" + row + " c:" + col);
-			
-//			row = 30+row*3;
-//			col = col-5;
-//			index = row + col;
+			index = 30+row*3+(col-5);
 		}
-		
-		index = row*sprRow + col;
+		else {
+			int sprRow = sprNumber / 9;
+			
+			index = row*sprRow + col;
+		}
 		
 		return frames.get(index);
 	}
