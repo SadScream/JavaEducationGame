@@ -1,6 +1,7 @@
 import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferStrategy;
@@ -15,6 +16,19 @@ public class Game extends JFrame implements Runnable {
 	private boolean flag = true;
 	
 	public Game() {
+		this.addMouseMotionListener(new MouseMotionListener() {
+			
+			@Override
+			public void mouseMoved(MouseEvent e) {
+			}
+			
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				// движение мыши
+				
+				field.mouseMoved(e);
+			}
+		});
 		
 		this.addMouseListener(new MouseAdapter() {
 			@Override
@@ -23,6 +37,22 @@ public class Game extends JFrame implements Runnable {
 				
 				unitController.mouseClicked(e);
 				repaint();
+			}
+			
+			@Override
+			public void mousePressed(MouseEvent e) {
+				// зажатие кнопки
+				
+				super.mousePressed(e);
+				field.mousePressed(e);
+			}
+			
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				// отжатие кнопки
+				
+				super.mouseReleased(e);
+				field.mouseReleased(e);
 			}
 		});
 		
@@ -37,7 +67,7 @@ public class Game extends JFrame implements Runnable {
 	public static void main(String[] args) {
 		Game frame = new Game();
 		
-		frame.setBounds(100, 5, 1080, 720);
+		frame.setBounds(100, 5, 1080, 700);
 		frame.setDefaultCloseOperation(2);
 		frame.setVisible(true);
 		
@@ -66,18 +96,18 @@ public class Game extends JFrame implements Runnable {
 	}
 
 	@Override
-	public void run() {
-		/*
-		 * вечный цикл
-		 * раз в 500 милисекунд вызывает метод tick в
-		 * unitController и перерисовывает поле
-		 */
+	public void run() {		
+		int time = 30, slept = 0;
 		
 		while (flag) {
-			unitController.tick();
+			if (slept == time*6) {
+				unitController.tick();
+				slept = 0;
+			}
 			repaint();
 			try {
-				Thread.sleep(250);
+				Thread.sleep(time);
+				slept += time;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

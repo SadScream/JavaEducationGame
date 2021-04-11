@@ -10,35 +10,35 @@ public class Abilities {
 		switch (unit.getTrend()) {
 		
 		case 0: {
-			area.set(unit.getX(), unit.getY()+1, Area.WALL);
+			area.build(unit.getX(), unit.getY()+1);
 			break;
 		}
 		case 1: {
-			area.set(unit.getX()-1,unit.getY()+1, Area.WALL);
+			area.build(unit.getX()-1,unit.getY()+1);
 			break;
 		}
 		case 2: {
-			area.set(unit.getX()-1,unit.getY(), Area.WALL);
+			area.build(unit.getX()-1,unit.getY());
 			break;
 		}
 		case 3: {
-			area.set(unit.getX(),unit.getY()-1, Area.WALL);
+			area.build(unit.getX(),unit.getY()-1);
 			break;
 		}
 		case 4: {
-			area.set(unit.getX(),unit.getY()-1, Area.WALL);
+			area.build(unit.getX(),unit.getY()-1);
 			break;
 		}
 		case 5: {
-			area.set(unit.getX()+1,unit.getY()-1, Area.WALL);
+			area.build(unit.getX()+1,unit.getY()-1);
 			break;
 		}
 		case 6: {
-			area.set(unit.getX()+1,unit.getY(), Area.WALL);
+			area.build(unit.getX()+1,unit.getY());
 			break;
 		}
 		case 7: {
-			area.set(unit.getX()+1,unit.getY()+1, Area.WALL);
+			area.build(unit.getX()+1,unit.getY()+1);
 			break;
 		}
 

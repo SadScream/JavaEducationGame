@@ -60,16 +60,19 @@ public class Area {
 	}
 
 	public void set(int x, int y, int status) {
-		if (x>=0 && y>=0 && x < map[0].length && y<map.length)
+		if (x>=0 && y>=0 && x < map[0].length && y< map.length)
 			map[y][x] = status;
 	}
 
+	public void build(int x, int y) {
+		if (x>=0 && y>=0 && x < map[0].length && y< map.length && map[y][x] == FREE) {
+			map[y][x] = WALL;
+		}
+	}
 
 	public void remove(int x, int y) {
-		if (x>=0 && y>=0 && x < map[0].length && y<map.length) {
-			if (map[y][x] == WALL) {
-				map[y][x] = FREE;
-			}
+		if (x>=0 && y>=0 && x < map[0].length && y< map.length && map[y][x] == WALL) {
+			map[y][x] = FREE;
 		}
 	}
 	

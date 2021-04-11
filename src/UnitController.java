@@ -58,35 +58,51 @@ public class UnitController {
 		 */
 		
 		Graphics2D g = (Graphics2D)gl;
-		System.out.println(anim);
-		for (int i = 0; i < units.length; i++) {
+		
+		for (int i = 0; i < units.length; i++) {			
 			BufferedImage img = sheet.grabSprite(anim, units[i].getTrend());
 			
 			int x = units[i].getX()*field.width+field.left;
 			int y = units[i].getY()*field.height+field.top;
 			
-			g.drawImage(img,
-					x+4, 
-					y+4,
-					field.width-8, field.height-8, null);
+			if (field.hasSelection()) { // пытается ли пользователь сейчас выделить область
+				// проверяем, какие юниты попадают внутрь выделения
+				
+				int tempX1, tempY1, tempX2, tempY2;
+				tempX1 = field.getSelectionStartX();
+				tempY1 = field.getSelectionStartY();
+				tempX2 = field.getSelectionEndX();
+				tempY2 = field.getSelectionEndY();
+				
+				// тем, кто попадает в выделение ставим selected = true, а всем остальным - false
+				if (x+25 >= tempX1 && x+25 <= tempX2 && y+25 >= tempY1 && y+25 <= tempY2) {
+					selected[i] = true;
+				}
+				else {
+					selected[i] = false;
+				}
+			}
+			
+			g.drawImage(img, x+4, y+4,
+						field.width-8, field.height-8, null);
 			
 			if (selected[i]) {
 				int coalition = units[i].getCoalition();
 				Color temp_color = new Color(
-						60*coalition, 
-						95*coalition, 
-						130*coalition);
-				g.setStroke(new BasicStroke(3f));
+								60*coalition, 
+								95*coalition, 
+								130*coalition);
+				g.setStroke(new BasicStroke(2f));
 				g.setColor(temp_color);
-				g.drawOval(
-						x, y,
-						field.width, field.height);
+				g.drawOval(x, y, field.width, field.height);
 			}
+			
 			g.setColor(Color.blue);
+			
 			if (units[i].getClass().getSimpleName()=="Hoplit") {
-				g.drawString("Hoplit", x, y+field.height);
+				g.drawString("Hoplit", x+1, y+field.height);
 			}else if (units[i].getClass().getSimpleName()=="Archer") {
-				g.drawString("Archer", x, y+field.height);
+				g.drawString("Archer", x+1, y+field.height);
 			}
 		}
 	}
