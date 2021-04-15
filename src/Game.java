@@ -1,4 +1,6 @@
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
@@ -24,10 +26,33 @@ public class Game extends JFrame implements Runnable {
 			
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				// движение мыши
+				// функция вызывается когда мы зажали клавишу мыши и двигаем ей
 				
-				field.mouseMoved(e);
+				unitController.mouseMoved(e);
 			}
+		});
+		
+		this.addKeyListener(new KeyListener() {
+			
+			@Override
+			public void keyTyped(KeyEvent e) {
+				// нажата клавиша алфавита
+			}
+			
+			@Override
+			public void keyReleased(KeyEvent e) {
+				// клавиша отпушена
+				
+				unitController.keyReleased(e);
+			}
+			
+			@Override
+			public void keyPressed(KeyEvent e) {
+				// клавиша нажата
+				
+				unitController.keyPressed(e);
+			}
+			
 		});
 		
 		this.addMouseListener(new MouseAdapter() {
@@ -44,7 +69,8 @@ public class Game extends JFrame implements Runnable {
 				// зажатие кнопки
 				
 				super.mousePressed(e);
-				field.mousePressed(e);
+				unitController.mousePressed(e);
+				repaint();
 			}
 			
 			@Override
@@ -52,7 +78,8 @@ public class Game extends JFrame implements Runnable {
 				// отжатие кнопки
 				
 				super.mouseReleased(e);
-				field.mouseReleased(e);
+				unitController.mouseReleased(e);
+				repaint();
 			}
 		});
 		
@@ -67,7 +94,7 @@ public class Game extends JFrame implements Runnable {
 	public static void main(String[] args) {
 		Game frame = new Game();
 		
-		frame.setBounds(100, 5, 1080, 700);
+		frame.setBounds(100, 5, 850, 700);
 		frame.setDefaultCloseOperation(2);
 		frame.setVisible(true);
 		

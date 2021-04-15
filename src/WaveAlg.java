@@ -32,8 +32,8 @@ public class WaveAlg {
 		
 		//int[] dx = {0,1,0,-1};
 		//int[] dy = {-1,0,1,0};
-		int[]dx = {0,1,0,-1,-1,-1,1,1};
-		int[]dy	= {-1,0,1,0,-1,1,-1,1};
+		int[] dx = {0,1,0,-1,-1,-1,1,1};
+		int[] dy = {-1,0,1,0,-1,1,-1,1};
 		int neighbourNum = dx.length;
 		
 		while(oldWave.size() > 0) {

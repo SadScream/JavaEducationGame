@@ -4,7 +4,7 @@ import java.util.HashMap;
 
 public class Unit {
 	private Area area;
-	private int coalition = -1;
+	private Coalition coalition;
 	private int x = 0, y = 0;
 	private ArrayList<Point> path = new ArrayList<Point>();
 	private ArrayList<Integer> trends = new ArrayList<Integer>();
@@ -18,6 +18,8 @@ public class Unit {
 		this.x = x;
 		this.y = y;
 		area.set(x, y, -5);
+		
+		coalition = UnitController.coalitions[0];
 		
 		for (int i = 0; i < 8; i++) {
 			trends.add(i);
@@ -42,20 +44,18 @@ public class Unit {
 	}
 	
 	public void setCoalition(int x) {
-		coalition = x;
+		coalition = UnitController.coalitions[x];
 	}
 
-	public int getCoalition() {
+	public Coalition getCoalition() {
 		return coalition;
 	};
 	
 	public int getX() {
-		// TODO Auto-generated method stub
 		return x;
 	}
 
 	public int getY() {
-		// TODO Auto-generated method stub
 		return y;
 	}
 
