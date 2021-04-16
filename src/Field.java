@@ -5,8 +5,8 @@ import java.awt.Graphics2D;
 public class Field {
 	private Area area;
 	private int col, row;
-	public final int left = 100, top = 100;
-	public final int width = 50, height = 50;
+	public final int left = 50, top = 75;
+	public final int width = 57, height = 57;
 
 	public Field(Area area) {
 		this.area = area;

@@ -2,8 +2,8 @@
 public class Hoplit extends Unit {	
 	Abilities abilities;
 	
-	public Hoplit(Area area, int x, int y) {
-		super(area, x, y);
+	public Hoplit(Area area, String coalition, int x, int y) {
+		super(area, coalition, x, y);
 		abilities = new Abilities(area);
 	}
 	

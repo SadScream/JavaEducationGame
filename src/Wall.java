@@ -34,6 +34,7 @@ public class Wall {
 		}
 	
 		g.setColor(new Color(120, 50, 50));
+		
 		for (int n = 0; n < area.getRow(); n++) {
 			for (int i = 0; i < area.getCol(); i++) {
 				if (area.getMap()[n][i] == -2) {

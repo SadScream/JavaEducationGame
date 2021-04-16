@@ -4,8 +4,11 @@ import java.util.HashMap;
 
 public class Unit {
 	private Area area;
-	private Coalition coalition;
+	private String coalition;
+	
 	private int x = 0, y = 0;
+	private int health = 100;
+	
 	private ArrayList<Point> path = new ArrayList<Point>();
 	private ArrayList<Integer> trends = new ArrayList<Integer>();
 	private HashMap<Integer, Integer> trendMap = new HashMap<Integer, Integer>();
@@ -13,13 +16,13 @@ public class Unit {
 	
 	private int state = 0; // 0-3
 
-	public Unit(Area area, int x, int y) {
+	public Unit(Area area, String coalition, int x, int y) {
 		this.area = area;
 		this.x = x;
 		this.y = y;
 		area.set(x, y, -5);
 		
-		coalition = UnitController.coalitions[0];
+		this.coalition = coalition;
 		
 		for (int i = 0; i < 8; i++) {
 			trends.add(i);
@@ -43,11 +46,29 @@ public class Unit {
 		turnMap.put(7, 1); // налево полоборота
 	}
 	
-	public void setCoalition(int x) {
-		coalition = UnitController.coalitions[x];
+	public int getHealth() {
+		return health;
 	}
 
-	public Coalition getCoalition() {
+	public void setHealth(int health) {
+		if (health < 0 || health > 100) {
+			System.err.println("Health cannot be below 0 or higher than 100");
+			return;
+		}
+		
+		this.health = health;
+	}
+
+	public void setCoalition(String s) {
+		if (UnitController.coalitions.containsKey(s)) {
+			coalition = s;
+		}
+		else {
+			System.err.println("Coalition doesn't exist");
+		}
+	}
+
+	public String getCoalition() {
 		return coalition;
 	};
 	
@@ -101,12 +122,15 @@ public class Unit {
 			}
 		}
 	}
+	
 	public void setX(int x) {
 		this.x = x;
 	}
+	
 	public void setY(int y) {
 		this.y = y;
 	}
+	
 	public Area getArea() {
 		return area;
 	}

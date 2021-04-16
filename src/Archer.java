@@ -2,8 +2,8 @@
 public class Archer extends Unit {
 	Abilities abilities;
 	
-	public Archer(Area area, int x, int y) {
-		super(area, x, y);
+	public Archer(Area area, String coalition, int x, int y) {
+		super(area, coalition, x, y);
 		abilities = new Abilities(area);
 	}
 

@@ -6,14 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.HashMap;
 
 public class UnitController {
-	
-	public static Coalition[] coalitions = new Coalition[] {
-		new Coalition(0, "Alliance", new Color(0,168,119)),
-		new Coalition(1, "Horde", new Color(255,8,0)),
-		new Coalition(2, "Undead", new Color(0,0,15))
-	};
+	public static HashMap<String, Color> coalitions = new HashMap<String, Color>();
 	
 	private SpriteSheet sheet = new SpriteSheet();
 	private Field field;
@@ -24,7 +20,6 @@ public class UnitController {
 	private boolean makingSelection = false; // нужно ли в данный момент отрисовывать выделение
 	
 	private int selectionWidth, selectionHeight; // параметры ширины и высоты выделения rectAngle
-	
 	private int anim = 0;
 	
 	private Point selectionStart = new Point(0, 0), // позиция левой верхней вершины прямоугольника(выделения)
@@ -34,20 +29,22 @@ public class UnitController {
 	private Color selectionColor;
 	private Font font;
 	
-	public UnitController(Area area, Field field) {		
+	public UnitController(Area area, Field field) {
+		coalitions.put("Alliance", new Color(0,168,119));
+		coalitions.put("Horde", new Color(255,8,0));
+		coalitions.put("Undead", new Color(0,0,15));
+		
 		font = new Font("Calibri", Font.PLAIN, 11);
 		
 		this.field = field;
 		for (int i = 0; i < 2; i++) {
-			units[i] = new Hoplit(area, i, i*2);
-			units[i].setCoalition(1);
+			units[i] = new Hoplit(area, "Horde", i, i*2);
 		}
 		
-		units[2] = new Hoplit(area, 2, 4);
+		units[2] = new Hoplit(area, "Alliance", 2, 4);
 		
 		for (int i = 3; i < units.length; i++) {
-			units[i] = new Archer(area, i, i*2);
-			units[i].setCoalition(2);
+			units[i] = new Archer(area, "Undead", i, i*2);
 		}
 		
 		selectionColor = new Color(18,211,0);
@@ -138,6 +135,8 @@ public class UnitController {
 		Graphics2D g = (Graphics2D)gl;
 		g.setFont(font);
 		
+		drawSelection(g);
+		
 		for (int i = 0; i < units.length; i++) {			
 			BufferedImage img = sheet.grabSprite(anim, units[i].getTrend());
 			
@@ -148,18 +147,15 @@ public class UnitController {
 					field.width-8, field.height-8, null);
 			
 			if (makingSelection) { // пытается ли пользователь сейчас выделить область
-				// проверяем, какие юниты попадают внутрь выделения
-				// тем, кто попадает в выделение ставим selected = true, а всем остальным - false, если не зажата клавиша CTRL
-				// иначе получается так, что мы добавляем их в выделение
-				
-				renderSelection(g);
-				
+				// если юнит входит в область выделения, то добавляем его
 				if (x+25 >= selectionStart.getX() && 
 						x+25 <= getSelectionEndX() &&
 						y+25 >= selectionStart.getY() &&
 						y+25 <= getSelectionEndY()) {
 					selected[i] = true;
 				}
+				// иначе если не нажата клавиша ctrl, то снимаем с него выделение
+				// если нажата, то он остается выделенным
 				else {
 					if (!ControlPressed) {
 						selected[i] = false;
@@ -169,10 +165,11 @@ public class UnitController {
 			
 			if (selected[i]) {
 				g.setStroke(new BasicStroke(2f));
-				g.setColor(units[i].getCoalition().getColor());
+				g.setColor(coalitions.get(units[i].getCoalition()));
 				g.drawOval(x, y, field.width, field.height);
 			}
 			
+			g.setStroke(new BasicStroke(1f));
 			g.setColor(Color.blue);
 			
 			if (units[i].getClass().getSimpleName()=="Hoplit") {
@@ -181,13 +178,22 @@ public class UnitController {
 				g.drawString("Archer", x+1, y+field.height);
 			}
 			
-			g.setColor(units[i].getCoalition().getColor());
-			g.drawString(units[i].getCoalition().getName(), x+1, y+9);
+			drawHealth(g, x, y, units[i]);
 		}
 	}
 	
-	public void renderSelection(Graphics2D g) {
-		// вычисляем и рисуем выделение
+	private void drawHealth(Graphics2D g, int x, int y, Unit unit) {
+		float healthBarWidth = 40f;
+		
+		g.setColor(new Color(0,168,119));
+		g.drawRect(x, y, (int)healthBarWidth, 5);
+		g.setColor(Color.RED);
+		g.fillRect(x+1, y+1, (int) ((healthBarWidth-1)*(unit.getHealth()/100.0)), 4);
+	}
+	
+	private void drawSelection(Graphics2D g) {
+		// рисуем выделение исходя из текущих координат мышки
+		// и координат точки, из которой начали выделение
 		
 		if (makingSelection) {
 			g.setColor(selectionColor);
@@ -221,11 +227,11 @@ public class UnitController {
 		}
 	}
 	
-	public int getSelectionEndX() {
+	private int getSelectionEndX() {
 		return selectionStart.getX()+selectionWidth;
 	}
 	
-	public int getSelectionEndY() {
+	private int getSelectionEndY() {
 		return selectionStart.getY()+selectionHeight;
 	}
 	
