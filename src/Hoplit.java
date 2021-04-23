@@ -18,7 +18,7 @@ public class Hoplit extends Unit {
 //				int enemyTrend = (u.getX()-getX())+10*(u.getY()-getY());
 //				System.out.println("Сосед имеется в направлении "+enemyTrend);
 				getPath().clear();
-				u.attackedFromUnit(this, 10);
+				u.attackedFromUnit(this, 8);
 			}
 			else {
 				u.setFighting(false);

@@ -3,6 +3,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 public class Unit {
+	private Point target;
 	private Area area;
 	private String coalition;
 	private Unit lastHitUnit;
@@ -151,13 +152,18 @@ public class Unit {
 	public void tick(Unit[] units, int state) {
 		this.state = state;
 		
+		if(target!=null && x>=0 && x<area.getCol() && y >= 0 && y<area.getRow()) {
+			path = new WaveAlg().findPath(area.getMap(), this.x, this.y, target.x, target.y);
+			target = null;
+		}
+		
 		if (path != null && path.size() > 1) {
 			Point p = path.get(1);
 
 			int newTrend = trendMap.get((p.x-x)+10*(p.y-y)); //-10,-9,1,11,10,9,-1,11
 			
 			if (trends.get(0) == newTrend) { // юнит смотрит туда куда надо
-				if (area.get(p.x, p.y) == -1) {
+				if (area.get(p.x, p.y) == Area.FREE) {
 					area.removeUnit(x, y);
 					x = p.x;
 					y = p.y;
