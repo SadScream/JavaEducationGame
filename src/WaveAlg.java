@@ -16,10 +16,13 @@ public class WaveAlg {
 		ArrayList<Point> wave = alg.findPath(map, 0, 2, 5, 5);
 	}
 	public ArrayList<Point> findPath(int[][] map, int x, int y, int tx, int ty) {
-//		if (map[y][x]==-2 || map[ty][tx] == -2) {
-//			System.out.println("указана занятая кубиком клетка");
-//			return null;
-//		}
+		boolean buzy = false;
+		
+		if (map[ty][tx]!=-1) {
+//			System.out.println("Юнит отправлен на препятствие");
+			buzy = true;
+		}
+		
 		ArrayList<Point> wave = new ArrayList<Point>();
 		
 		int cloneMap[][] = clone(map);
@@ -36,11 +39,16 @@ public class WaveAlg {
 		int[] dy = {-1,0,1,0,-1,1,-1,1};
 		int neighbourNum = dx.length;
 		
+		first:
 		while(oldWave.size() > 0) {
 			nstep++;
 			wave.clear();
 			
 			for(Point p: oldWave) {
+				if (p.x == tx && p.y == ty) {
+					break first;
+				}
+				
 				for(int d = 0; d < neighbourNum; d++) {
 					x = p.x + dx[d];
 					y = p.y + dy[d];
@@ -62,7 +70,7 @@ public class WaveAlg {
 		wave.add(new Point(tx, ty));
 		
 		while(cloneMap[ty][tx] != 0) {
-			flag = true;
+			flag = false;
 			
 			for(int d = 0; d < neighbourNum; d++) {
 				x = tx + dx[d];
@@ -72,24 +80,27 @@ public class WaveAlg {
 					if (cloneMap[ty][tx]-1 == cloneMap[y][x]) {
 						tx = x;
 						ty = y;
-						flag = false;
+						flag = true;
 						wave.add(new Point(tx, ty));
 						break;
 					}
 				}
 			}
-			if (flag == true) {
+			if (!flag) {
 				System.out.println("Путь не найден");
 				break;
 			}
 		}
+		if (buzy) {
+			wave.remove(0);
+		}
+
 		Collections.reverse(wave);
-		
-//		waveOut(wave);
+
 		for (Point p: wave) {
 			cloneMap[p.y][p.x] = 0;
 		}
-//		print(cloneMap);
+
 		return wave;
 	}
 	
