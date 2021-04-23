@@ -8,9 +8,10 @@ public class Archer extends Unit {
 	}
 
 	@Override
-	public void tick() {
-		super.tick();
+	public void tick(Unit[] units, int state) {
+		super.tick(units, state);
 		
+		abilities.build(this);
 		abilities.destroy(this);
 	}
 }

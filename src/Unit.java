@@ -5,22 +5,25 @@ import java.util.HashMap;
 public class Unit {
 	private Area area;
 	private String coalition;
+	private Unit lastHitUnit;
 	
 	private int x = 0, y = 0;
 	private int health = 100;
+	private boolean killed = false;
+	private boolean fighting = false;
 	
 	private ArrayList<Point> path = new ArrayList<Point>();
 	private ArrayList<Integer> trends = new ArrayList<Integer>();
 	private HashMap<Integer, Integer> trendMap = new HashMap<Integer, Integer>();
 	private HashMap<Integer, Integer> turnMap = new HashMap<Integer, Integer>();
 	
-	private int state = 0; // 0-3
+	private int state = 0; // 0-3 casual 4 fighting 5-9 dying
 
 	public Unit(Area area, String coalition, int x, int y) {
 		this.area = area;
 		this.x = x;
 		this.y = y;
-		area.set(x, y, -5);
+		area.addUnit(x, y);
 		
 		this.coalition = coalition;
 		
@@ -46,17 +49,68 @@ public class Unit {
 		turnMap.put(7, 1); // налево полоборота
 	}
 	
+	public void stateStep() {
+		if (state == 9) {
+			return;
+		}
+		
+		state += 1;
+	}
+	
+	public boolean isFighting() {
+		return fighting;
+	}
+
+	public void setFighting(boolean fighting) {
+		this.fighting = fighting;
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public HashMap<Integer, Integer> getTrendMap() {
+		return trendMap;
+	}
+	
+	public ArrayList<Point> getPath() {
+		return path;
+	}
+	
+	public void setKilled(boolean killed) {
+		this.killed = killed;
+		setState(5);
+		area.removeUnit(x, y);
+	}
+	
+	public boolean isKilled() {
+		return killed;
+	}
+
 	public int getHealth() {
 		return health;
 	}
 
 	public void setHealth(int health) {
-		if (health < 0 || health > 100) {
-			System.err.println("Health cannot be below 0 or higher than 100");
+		if (health < 0) {
+			System.out.println("Unit killed");
+			setKilled(true);
 			return;
+		}
+		else if (health > 100) {
+			System.err.println("Health cannot be below 0 or higher than 100");
 		}
 		
 		this.health = health;
+	}
+
+	public void attackedFromUnit(Unit damager, int damage) {
+		lastHitUnit = damager;
+		setHealth(health-damage);
 	}
 
 	public void setCoalition(String s) {
@@ -94,7 +148,9 @@ public class Unit {
 		return trends.get(0);
 	}
 
-	public void tick() {
+	public void tick(Unit[] units, int state) {
+		this.state = state;
+		
 		if (path != null && path.size() > 1) {
 			Point p = path.get(1);
 
@@ -102,10 +158,10 @@ public class Unit {
 			
 			if (trends.get(0) == newTrend) { // юнит смотрит туда куда надо
 				if (area.get(p.x, p.y) == -1) {
-					area.set(x, y, -1);
+					area.removeUnit(x, y);
 					x = p.x;
 					y = p.y;
-					area.set(x, y, -5);
+					area.addUnit(x, y);
 					path.remove(1);
 				}
 			}

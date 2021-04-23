@@ -138,13 +138,15 @@ public class UnitController {
 		drawSelection(g);
 		
 		for (int i = 0; i < units.length; i++) {			
-			BufferedImage img = sheet.grabSprite(anim, units[i].getTrend());
-			
 			int x = units[i].getX()*field.width+field.left;
 			int y = units[i].getY()*field.height+field.top;
 			
-			g.drawImage(img, x+4, y+7,
-					field.width-8, field.height-8, null);
+			if (units[i].isKilled()) {
+				drawDeathAnimation(g, x, y, units[i]);
+				continue;
+			}
+			
+			drawUnit(g, x, y, units[i]);
 			
 			if (makingSelection) { // пытается ли пользователь сейчас выделить область
 				// если юнит входит в область выделения, то добавляем его
@@ -168,27 +170,48 @@ public class UnitController {
 				g.setColor(coalitions.get(units[i].getCoalition()));
 				g.drawOval(x, y, field.width, field.height);
 			}
-			
-			g.setStroke(new BasicStroke(1f));
-			g.setColor(Color.blue);
-			
-			if (units[i].getClass().getSimpleName()=="Hoplit") {
-				g.drawString("Hoplit", x+1, y+field.height);
-			}else if (units[i].getClass().getSimpleName()=="Archer") {
-				g.drawString("Archer", x+1, y+field.height);
-			}
-			
-			drawHealth(g, x, y, units[i]);
 		}
 	}
 	
-	private void drawHealth(Graphics2D g, int x, int y, Unit unit) {
+	private void drawDeathAnimation(Graphics2D g, int x, int y, Unit unit) {
+		BufferedImage img;
+		
+		unit.stateStep();
+		
+		if (unit.getState() == 9)
+			return;
+		else if (unit.getState() == 5)
+			img = sheet.grabSprite(unit.getState(), unit.getTrend());
+		else
+			img = sheet.grabSprite(5, unit.getState()-5);
+		
+		g.drawImage(img, x+4, y+7,
+				field.width-8, field.height-8, null);
+	}
+
+	private void drawUnit(Graphics2D g, int x, int y, Unit unit) {
+		BufferedImage img;
+		
+		if (!unit.isFighting()) {
+			img = sheet.grabSprite(anim, unit.getTrend());
+		}
+		else {
+			img = sheet.grabSprite(4, unit.getTrend());
+		}
+		
 		float healthBarWidth = 40f;
+		
+		g.drawImage(img, x+4, y+7,
+				field.width-8, field.height-8, null);
 		
 		g.setColor(new Color(0,168,119));
 		g.drawRect(x, y, (int)healthBarWidth, 5);
 		g.setColor(Color.RED);
 		g.fillRect(x+1, y+1, (int) ((healthBarWidth-1)*(unit.getHealth()/100.0)), 4);
+		
+		g.setStroke(new BasicStroke(1f));
+		g.setColor(Color.blue);
+		g.drawString(unit.getClass().getSimpleName(), x+1, y+field.height);
 	}
 	
 	private void drawSelection(Graphics2D g) {
@@ -256,7 +279,8 @@ public class UnitController {
 		}
 		
 		for (Unit u: units) {
-			u.tick();
+			if (!u.isKilled())
+				u.tick(units, anim);
 		}
 	}
 }

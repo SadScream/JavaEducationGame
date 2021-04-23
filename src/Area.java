@@ -58,21 +58,40 @@ public class Area {
 			System.out.println();
 		}
 	}
+	
+	public boolean coordinatesAreCorrect(int x, int y) {
+		if (x>=0 && y>=0 && x < map[0].length && y < map.length)
+			return true;
+		
+		return false;
+	}
 
-	public void set(int x, int y, int status) {
-		if (x>=0 && y>=0 && x < map[0].length && y< map.length)
+	private void set(int x, int y, int status) {
+		if (coordinatesAreCorrect(x, y))
 			map[y][x] = status;
 	}
 
-	public void build(int x, int y) {
-		if (x>=0 && y>=0 && x < map[0].length && y< map.length && map[y][x] == FREE) {
-			map[y][x] = WALL;
+	public void addWall(int x, int y) {
+		if (coordinatesAreCorrect(x, y) && get(x,y) == FREE) {
+			set(x, y, WALL);
+		}
+	}
+	
+	public void addUnit(int x, int y) {
+		if (coordinatesAreCorrect(x, y) && get(x,y) == FREE) {
+			set(x, y, UNIT);
 		}
 	}
 
-	public void remove(int x, int y) {
-		if (x>=0 && y>=0 && x < map[0].length && y< map.length && map[y][x] == WALL) {
-			map[y][x] = FREE;
+	public void removeWall(int x, int y) {
+		if (coordinatesAreCorrect(x, y) && get(x,y) == WALL) {
+			set(x, y, FREE);
+		}
+	}
+	
+	public void removeUnit(int x, int y) {
+		if (coordinatesAreCorrect(x, y) && get(x,y) == UNIT) {
+			set(x, y, FREE);
 		}
 	}
 	

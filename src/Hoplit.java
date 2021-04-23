@@ -8,10 +8,22 @@ public class Hoplit extends Unit {
 	}
 	
 	@Override
-	public void tick() {
-		super.tick();
-		
-		abilities.build(this);
+	public void tick(Unit[] units, int state) {
+		super.tick(units, state);
+
+		for (Unit u: units) {
+			if (!u.isKilled() && getTrendMap().get( (u.getX()-getX()) + 10*(u.getY()-getY()) ) != null) {
+				setFighting(true);
+//				System.out.println(getX() + " " + getY());
+//				int enemyTrend = (u.getX()-getX())+10*(u.getY()-getY());
+//				System.out.println("Сосед имеется в направлении "+enemyTrend);
+				getPath().clear();
+				u.attackedFromUnit(this, 10);
+			}
+			else {
+				u.setFighting(false);
+			}
+		}
 	}
 
 }
